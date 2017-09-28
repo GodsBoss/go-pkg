@@ -2,7 +2,10 @@ package unique
 
 // Key represents a unique key. It cannot be implemented by other packages.
 type Key interface {
+	// Equals checks wether this key equals another key.
 	Equals(Key) bool
+
+	// internal makes it impossible to implement Key from outside of this package.
 	internal()
 }
 
