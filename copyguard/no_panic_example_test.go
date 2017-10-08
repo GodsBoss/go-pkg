@@ -11,7 +11,7 @@ type MustNotBeCopied struct {
 }
 
 func (m *MustNotBeCopied) Show(who string) {
-	m.guard.Check(m, fmt.Sprintf("%s used after copy!"))
+	m.guard.Check(m, fmt.Sprintf("%s used after copy!", who))
 	fmt.Printf("This is %s!\n", who)
 }
 
