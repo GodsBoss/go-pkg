@@ -2,6 +2,7 @@ package typedconf
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 )
 
@@ -65,6 +66,35 @@ func (inst *instance) UnmarshalJSON(data []byte) error {
 
 type jsonTypeDetect struct {
 	Type string `json:"type"`
+}
+
+func (inst *instance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
+	typeKey := ""
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "type" {
+			typeKey = attr.Value
+			break
+		}
+	}
+	if typeKey == "" {
+		return fmt.Errorf("no type found")
+	}
+	create, ok := inst.decoders.decoders[typeKey]
+	if !ok {
+		return fmt.Errorf("unknown type %s", typeKey)
+	}
+	obj := create()
+	err := decoder.DecodeElement(obj, &start)
+	if err != nil {
+		return err
+	}
+	decoder.Skip()
+	inst.value = obj
+	return nil
+}
+
+type xmlDetect struct {
+	Type string `xml:"type,attr"`
 }
 
 func (inst instance) Value() interface{} {
