@@ -93,10 +93,6 @@ func (inst *instance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement)
 	return nil
 }
 
-type xmlDetect struct {
-	Type string `xml:"type,attr"`
-}
-
 func (inst instance) Value() interface{} {
 	return inst.value
 }
