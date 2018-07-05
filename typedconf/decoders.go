@@ -5,9 +5,10 @@ import (
 	"fmt"
 )
 
-type Decode func(data []byte, dest interface{}) error
+// DecodeFunc decodes data into a destination.
+type DecodeFunc func(data []byte, dest interface{}) error
 
-func NewDecoders(decode Decode) Decoders {
+func NewDecoders(decode DecodeFunc) Decoders {
 	return &decoders{
 		decode:   decode,
 		decoders: make(map[string]func() interface{}),
@@ -20,7 +21,7 @@ type Decoders interface {
 }
 
 type decoders struct {
-	decode   Decode
+	decode   DecodeFunc
 	decoders map[string]func() interface{}
 }
 
