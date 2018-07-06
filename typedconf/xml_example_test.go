@@ -51,7 +51,7 @@ type Item struct {
 }
 
 func (it *Item) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	decoder := typedconf.NewDecoders(xml.Unmarshal)
+	decoder := typedconf.NewDecoders()
 	decoder.Register("-", func() interface{} {
 		return &Negate{}
 	})

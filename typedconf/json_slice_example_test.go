@@ -53,7 +53,7 @@ type Config struct {
 type TextSources []TextSource
 
 func (sources *TextSources) UnmarshalJSON(data []byte) error {
-	decoders := typedconf.NewDecoders(json.Unmarshal)
+	decoders := typedconf.NewDecoders()
 	decoders.Register("inline", func() interface{} {
 		return &InlineSource{}
 	})

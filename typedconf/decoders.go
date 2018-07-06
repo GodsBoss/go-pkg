@@ -6,12 +6,8 @@ import (
 	"fmt"
 )
 
-// DecodeFunc decodes data into a destination.
-type DecodeFunc func(data []byte, dest interface{}) error
-
-func NewDecoders(decode DecodeFunc) Decoders {
+func NewDecoders() Decoders {
 	return &decoders{
-		decode:   decode,
 		decoders: make(map[string]func() interface{}),
 	}
 }
@@ -22,7 +18,6 @@ type Decoders interface {
 }
 
 type decoders struct {
-	decode   DecodeFunc
 	decoders map[string]func() interface{}
 }
 
