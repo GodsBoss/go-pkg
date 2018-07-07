@@ -29,22 +29,16 @@ func (dec *decoders) Instance() Instance {
 	return dec.createInstance(dec)
 }
 
-func (dec *decoders) create(objectType string) (interface{}, bool) {
-	if cr, ok := dec.decoders[objectType]; ok {
-		return cr(), true
-	}
-	return nil, false
-}
-
 func (dec *decoders) unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error, set func(interface{})) error {
 	desiredType, err := detect()
 	if err != nil {
 		return err
 	}
-	dest, ok := dec.create(desiredType)
+	cr, ok := dec.decoders[desiredType]
 	if !ok {
 		return fmt.Errorf("unknown type %s", desiredType)
 	}
+	dest := cr()
 	err = concreteUnmarshal(dest)
 	if err != nil {
 		return err
