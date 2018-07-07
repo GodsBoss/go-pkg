@@ -2,12 +2,11 @@ package typedconf
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 func NewJSONDecoders() Decoders {
 	return newDecoders(
-		func(tObjs typedObjects) Instance {
+		func(tObjs unmarshaler) Instance {
 			return &jsonInstance{
 				decoders: tObjs,
 			}
@@ -17,20 +16,23 @@ func NewJSONDecoders() Decoders {
 
 type jsonInstance struct {
 	instance
-	decoders typedObjects
+	decoders unmarshaler
 }
 
 func (inst *jsonInstance) UnmarshalJSON(data []byte) error {
-	detect := &jsonTypeDetect{}
-	err := json.Unmarshal(data, detect)
-	if err != nil {
-		return err
-	}
-	obj, ok := inst.decoders.create(detect.Type)
-	if !ok {
-		return fmt.Errorf("unknown type %s", detect.Type)
-	}
-	err = json.Unmarshal(data, obj)
+	obj, err := inst.decoders.unmarshal(
+		func() (string, error) {
+			detect := &jsonTypeDetect{}
+			err := json.Unmarshal(data, detect)
+			if err != nil {
+				return "", err
+			}
+			return detect.Type, nil
+		},
+		func(obj interface{}) error {
+			return json.Unmarshal(data, obj)
+		},
+	)
 	if err != nil {
 		return err
 	}

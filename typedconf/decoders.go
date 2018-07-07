@@ -1,5 +1,7 @@
 package typedconf
 
+import "fmt"
+
 func newDecoders(createInstance createInstanceFunc) Decoders {
 	return &decoders{
 		decoders:       make(map[string]func() interface{}),
@@ -7,7 +9,7 @@ func newDecoders(createInstance createInstanceFunc) Decoders {
 	}
 }
 
-type createInstanceFunc func(tObjs typedObjects) Instance
+type createInstanceFunc func(tObjs unmarshaler) Instance
 
 type Decoders interface {
 	Register(key string, create func() interface{})
@@ -32,6 +34,26 @@ func (dec *decoders) create(objectType string) (interface{}, bool) {
 		return cr(), true
 	}
 	return nil, false
+}
+
+func (dec *decoders) unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error) (interface{}, error) {
+	desiredType, err := detect()
+	if err != nil {
+		return nil, err
+	}
+	dest, ok := dec.create(desiredType)
+	if !ok {
+		return nil, fmt.Errorf("unknown type %s", desiredType)
+	}
+	err = concreteUnmarshal(dest)
+	if err != nil {
+		return nil, err
+	}
+	return dest, nil
+}
+
+type unmarshaler interface {
+	unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error) (interface{}, error)
 }
 
 type typedObjects interface {
