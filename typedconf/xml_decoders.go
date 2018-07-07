@@ -16,12 +16,8 @@ func NewXMLDecoders() Decoders {
 }
 
 type xmlInstance struct {
+	instance
 	decoders typedObjects
-	value    interface{}
-}
-
-func (inst xmlInstance) Value() interface{} {
-	return inst.value
 }
 
 func (inst *xmlInstance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {

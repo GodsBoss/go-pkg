@@ -41,3 +41,11 @@ type typedObjects interface {
 type Instance interface {
 	Value() interface{}
 }
+
+type instance struct {
+	value interface{}
+}
+
+func (inst instance) Value() interface{} {
+	return inst.value
+}

@@ -16,12 +16,8 @@ func NewJSONDecoders() Decoders {
 }
 
 type jsonInstance struct {
+	instance
 	decoders typedObjects
-	value    interface{}
-}
-
-func (inst jsonInstance) Value() interface{} {
-	return inst.value
 }
 
 func (inst *jsonInstance) UnmarshalJSON(data []byte) error {
