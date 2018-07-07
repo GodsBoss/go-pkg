@@ -31,12 +31,23 @@ func (dec *decoders) Instance() Instance {
 	}
 }
 
+func (dec *decoders) create(objectType string) (interface{}, bool) {
+	if cr, ok := dec.decoders[objectType]; ok {
+		return cr(), true
+	}
+	return nil, false
+}
+
+type typedObjects interface {
+	create(objectType string) (interface{}, bool)
+}
+
 type Instance interface {
 	Value() interface{}
 }
 
 type instance struct {
-	decoders *decoders
+	decoders typedObjects
 	value    interface{}
 }
 
@@ -46,11 +57,10 @@ func (inst *instance) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	create, ok := inst.decoders.decoders[detect.Type]
+	obj, ok := inst.decoders.create(detect.Type)
 	if !ok {
 		return fmt.Errorf("unknown type %s", detect.Type)
 	}
-	obj := create()
 	err = json.Unmarshal(data, obj)
 	if err != nil {
 		return err
@@ -74,11 +84,10 @@ func (inst *instance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement)
 	if typeKey == "" {
 		return fmt.Errorf("no type found")
 	}
-	create, ok := inst.decoders.decoders[typeKey]
+	obj, ok := inst.decoders.create(typeKey)
 	if !ok {
 		return fmt.Errorf("unknown type %s", typeKey)
 	}
-	obj := create()
 	err := decoder.DecodeElement(obj, &start)
 	if err != nil {
 		return err
