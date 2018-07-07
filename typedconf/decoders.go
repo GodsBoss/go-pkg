@@ -36,24 +36,25 @@ func (dec *decoders) create(objectType string) (interface{}, bool) {
 	return nil, false
 }
 
-func (dec *decoders) unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error) (interface{}, error) {
+func (dec *decoders) unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error, set func(interface{})) error {
 	desiredType, err := detect()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	dest, ok := dec.create(desiredType)
 	if !ok {
-		return nil, fmt.Errorf("unknown type %s", desiredType)
+		return fmt.Errorf("unknown type %s", desiredType)
 	}
 	err = concreteUnmarshal(dest)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return dest, nil
+	set(dest)
+	return nil
 }
 
 type unmarshaler interface {
-	unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error) (interface{}, error)
+	unmarshal(detect func() (string, error), concreteUnmarshal func(obj interface{}) error, set func(interface{})) error
 }
 
 type typedObjects interface {
@@ -70,4 +71,8 @@ type instance struct {
 
 func (inst instance) Value() interface{} {
 	return inst.value
+}
+
+func (inst *instance) setValue(value interface{}) {
+	inst.value = value
 }

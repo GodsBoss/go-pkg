@@ -20,7 +20,7 @@ type jsonInstance struct {
 }
 
 func (inst *jsonInstance) UnmarshalJSON(data []byte) error {
-	obj, err := inst.decoders.unmarshal(
+	return inst.decoders.unmarshal(
 		func() (string, error) {
 			detect := &jsonTypeDetect{}
 			err := json.Unmarshal(data, detect)
@@ -32,12 +32,8 @@ func (inst *jsonInstance) UnmarshalJSON(data []byte) error {
 		func(obj interface{}) error {
 			return json.Unmarshal(data, obj)
 		},
+		inst.setValue,
 	)
-	if err != nil {
-		return err
-	}
-	inst.value = obj
-	return nil
 }
 
 type jsonTypeDetect struct {

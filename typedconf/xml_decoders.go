@@ -21,7 +21,7 @@ type xmlInstance struct {
 }
 
 func (inst *xmlInstance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
-	obj, err := inst.decoders.unmarshal(
+	return inst.decoders.unmarshal(
 		func() (string, error) {
 			typeKey := ""
 			for _, attr := range start.Attr {
@@ -38,10 +38,6 @@ func (inst *xmlInstance) UnmarshalXML(decoder *xml.Decoder, start xml.StartEleme
 		func(obj interface{}) error {
 			return decoder.DecodeElement(obj, &start)
 		},
+		inst.setValue,
 	)
-	if err != nil {
-		return err
-	}
-	inst.value = obj
-	return nil
 }
