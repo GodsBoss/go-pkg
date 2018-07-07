@@ -1,10 +1,13 @@
 package typedconf
 
-func newDecoders() Decoders {
+func newDecoders(createInstance createInstanceFunc) Decoders {
 	return &decoders{
-		decoders: make(map[string]func() interface{}),
+		decoders:       make(map[string]func() interface{}),
+		createInstance: createInstance,
 	}
 }
+
+type createInstanceFunc func(tObjs typedObjects) Instance
 
 type Decoders interface {
 	Register(key string, create func() interface{})
@@ -12,7 +15,8 @@ type Decoders interface {
 }
 
 type decoders struct {
-	decoders map[string]func() interface{}
+	decoders       map[string]func() interface{}
+	createInstance createInstanceFunc
 }
 
 func (dec *decoders) Register(key string, create func() interface{}) {
@@ -20,9 +24,7 @@ func (dec *decoders) Register(key string, create func() interface{}) {
 }
 
 func (dec *decoders) Instance() Instance {
-	return &instance{
-		decoders: dec,
-	}
+	return dec.createInstance(dec)
 }
 
 func (dec *decoders) create(objectType string) (interface{}, bool) {
@@ -38,13 +40,4 @@ type typedObjects interface {
 
 type Instance interface {
 	Value() interface{}
-}
-
-type instance struct {
-	decoders typedObjects
-	value    interface{}
-}
-
-func (inst instance) Value() interface{} {
-	return inst.value
 }

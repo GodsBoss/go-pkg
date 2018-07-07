@@ -6,10 +6,25 @@ import (
 )
 
 func NewXMLDecoders() Decoders {
-	return newDecoders()
+	return newDecoders(
+		func(tObjs typedObjects) Instance {
+			return &xmlInstance{
+				decoders: tObjs,
+			}
+		},
+	)
 }
 
-func (inst *instance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
+type xmlInstance struct {
+	decoders typedObjects
+	value    interface{}
+}
+
+func (inst xmlInstance) Value() interface{} {
+	return inst.value
+}
+
+func (inst *xmlInstance) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
 	typeKey := ""
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "type" {

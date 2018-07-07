@@ -6,10 +6,25 @@ import (
 )
 
 func NewJSONDecoders() Decoders {
-	return newDecoders()
+	return newDecoders(
+		func(tObjs typedObjects) Instance {
+			return &jsonInstance{
+				decoders: tObjs,
+			}
+		},
+	)
 }
 
-func (inst *instance) UnmarshalJSON(data []byte) error {
+type jsonInstance struct {
+	decoders typedObjects
+	value    interface{}
+}
+
+func (inst jsonInstance) Value() interface{} {
+	return inst.value
+}
+
+func (inst *jsonInstance) UnmarshalJSON(data []byte) error {
 	detect := &jsonTypeDetect{}
 	err := json.Unmarshal(data, detect)
 	if err != nil {
