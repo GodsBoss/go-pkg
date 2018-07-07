@@ -1,5 +1,5 @@
 package typedconf
 
 func NewJSONDecoders() Decoders {
-	return NewDecoders()
+	return newDecoders()
 }

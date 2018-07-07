@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func NewDecoders() Decoders {
+func newDecoders() Decoders {
 	return &decoders{
 		decoders: make(map[string]func() interface{}),
 	}
