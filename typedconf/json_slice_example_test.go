@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Example() {
+func ExampleNewJSONDecoders_slice() {
 	input := []byte(
 		`
 			{

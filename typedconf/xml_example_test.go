@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func ExampleDecoders_xml() {
+func ExampleNewXMLDecoders_instance() {
 	input := []byte(
 		`
       <list>
