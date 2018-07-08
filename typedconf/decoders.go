@@ -55,7 +55,9 @@ type typedObjects interface {
 	create(objectType string) (interface{}, bool)
 }
 
+// Instance is an instance which can be unmarshaled and stores the resulting unmarshaled concrete type.
 type Instance interface {
+	// Value returns the concrete value created by unmarshaling.
 	Value() interface{}
 }
 
