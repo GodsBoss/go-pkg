@@ -30,8 +30,8 @@ func ExampleInt64_noBounds() {
 
 func ExampleInt64_leftBound() {
 	base := interval.Int64{}
-	incl := base.Left(100, interval.Inclusive())
-	excl := base.Left(100, interval.Exclusive())
+	incl := base.Lower(100, interval.Inclusive())
+	excl := base.Lower(100, interval.Exclusive())
 
 	values := []int64{
 		99,
@@ -41,23 +41,23 @@ func ExampleInt64_leftBound() {
 
 	for i := range values {
 		if incl.Inside(values[i]) {
-			fmt.Printf("%d is inside (inclusive left bound)\n", values[i])
+			fmt.Printf("%d is inside (inclusive lower bound)\n", values[i])
 		}
 		if excl.Inside(values[i]) {
-			fmt.Printf("%d is inside (exclusive left bound)\n", values[i])
+			fmt.Printf("%d is inside (exclusive lower bound)\n", values[i])
 		}
 	}
 
 	// Output:
-	// 100 is inside (inclusive left bound)
-	// 1000000000 is inside (inclusive left bound)
-	// 1000000000 is inside (exclusive left bound)
+	// 100 is inside (inclusive lower bound)
+	// 1000000000 is inside (inclusive lower bound)
+	// 1000000000 is inside (exclusive lower bound)
 }
 
 func ExampleInt64_rightBound() {
 	base := interval.Int64{}
-	incl := base.Right(250, interval.Inclusive())
-	excl := base.Right(250, interval.Exclusive())
+	incl := base.Upper(250, interval.Inclusive())
+	excl := base.Upper(250, interval.Exclusive())
 
 	values := []int64{
 		-50000,
@@ -67,15 +67,15 @@ func ExampleInt64_rightBound() {
 
 	for i := range values {
 		if incl.Inside(values[i]) {
-			fmt.Printf("%d is inside (inclusive right bound)\n", values[i])
+			fmt.Printf("%d is inside (inclusive upper bound)\n", values[i])
 		}
 		if excl.Inside(values[i]) {
-			fmt.Printf("%d is inside (exclusive right bound)\n", values[i])
+			fmt.Printf("%d is inside (exclusive upper bound)\n", values[i])
 		}
 	}
 
 	// Output:
-	// -50000 is inside (inclusive right bound)
-	// -50000 is inside (exclusive right bound)
-	// 250 is inside (inclusive right bound)
+	// -50000 is inside (inclusive upper bound)
+	// -50000 is inside (exclusive upper bound)
+	// 250 is inside (inclusive upper bound)
 }
