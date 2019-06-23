@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func ExampleIntLists() {
+func ExampleInts() {
 	first := []int{2, 3, 11, 7, 5}
 	second := []int{4, 5, 6, 7, 8, 12}
 
