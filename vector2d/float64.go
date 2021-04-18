@@ -20,7 +20,7 @@ func NewFloat64(x, y float64) Float64 {
 }
 
 // Float64FromInt64 converts an integer vector to a floating-point vector.
-func Float64FromInt64(i Float64) Float64 {
+func Float64FromInt64(i Int64) Float64 {
 	return NewFloat64(float64(i.X()), float64(i.Y()))
 }
 
